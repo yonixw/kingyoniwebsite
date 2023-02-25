@@ -1,0 +1,23 @@
+
+{
+  "name": "king-yoni-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js localhost 8080"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-rate-limit": "5.5.0",
+    "morgan": "~1.9.1",
+    "parse-duration": "1.0.0",
+    "pretty-ms": "7.0.1",
+  },
+  "devDependencies": {
+    "nodemon": "1.18.4"
+  },
+  "keywords": []
+}
