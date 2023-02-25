@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>מלך.ישראל</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Suez+One&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+      body {
+        font-family: "Suez One", serif;
+        font-size: 2em;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        background: gold;
+      }
+
+      .app {
+        margin: auto;
+        /*background-color: red;*/
+
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        position: absolute;
+        max-width: 100%;
+        max-height: 100%;
+
+        text-align: center;
+        padding: 15% 0 45% 0;
+      }
+
+      .digit-group input {
+        width: 30px;
+        height: 50px;
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 7px;
+        line-height: 50px;
+        text-align: center;
+        font-size: 24px;
+        font-family: "Raleway", sans-serif;
+        font-weight: 200;
+        color: black;
+        margin: 0 2px;
+      }
+
+      #container {
+        left: 0px;
+        top: -100px;
+        height: calc(100vh + 100px);
+        overflow: hidden;
+        position: relative;
+      }
+
+      #animate {
+        margin: 0 auto;
+        width: 20px;
+        overflow: visible;
+        position: relative;
+      }
+
+      #all {
+        overflow: hidden;
+        height: 100vh;
+        width: 100%;
+        position: fixed;
+      }
+    </style>
+  </head>
+
+  <body dir="rtl">
+    <div id="all">
+      <div id="container">
+        <div id="animate"></div>
+      </div>
+    </div>
+
+    <div class="app">
+      התרצה את פני המלך לגלות? <br />
+      כל מה שנשאר זה את שמו להגות! <br />
+      <hr style="visibility: hidden;" />
+      <form
+        method="get"
+        class="digit-group"
+        data-group-name="digits"
+        data-autosubmit="false"
+        autocomplete="off"
+      >
+        <input type="text" id="digit-1" name="digit-1" data-next="digit-2" />
+        <input
+          type="text"
+          id="digit-2"
+          name="digit-2"
+          data-next="digit-3"
+          data-previous="digit-1"
+        />
+        <input
+          type="text"
+          id="digit-3"
+          name="digit-3"
+          data-next="digit-4"
+          data-previous="digit-2"
+        />
+        <input
+          type="text"
+          id="digit-4"
+          name="digit-4"
+          data-next="digit-5"
+          data-previous="digit-3"
+        />
+        <hr style="visibility: hidden;" />
+
+        <input
+          type="text"
+          id="digit-5"
+          name="digit-5"
+          data-next="digit-6"
+          data-previous="digit-4"
+        />
+        <input
+          type="text"
+          id="digit-6"
+          name="digit-6"
+          data-next="digit-7"
+          data-previous="digit-5"
+        />
+        <input
+          type="text"
+          id="digit-7"
+          name="digit-7"
+          data-next="digit-8"
+          data-previous="digit-6"
+        />
+        <input
+          type="text"
+          id="digit-8"
+          name="digit-8"
+          data-next="digit-9"
+          data-previous="digit-7"
+        />
+        <input
+          type="text"
+          id="digit-9"
+          name="digit-9"
+          data-previous="digit-8"
+        />
+      </form>
+    </div>
+
+    <div id="final" class="app" style="
+      padding: 0; 
+      visibility: hidden;
+      background-size: auto 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+     width: 100%;
+     height: 75%;
+     "
+     onclick="clearResult()"
+     >
+
+      <span style="color: white;
+      text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;">
+          יפה ניחשת, <br />
+          ולמלך לא התכחשת!
+      <span>
+      
+    </div>
+
+    <script>
+      let check =
+        "4cac50ea60686e392e3e22256cc61ab9a936a39fb01c2a3bf0751c59feaa7e1f";
+
+      let allInput = () => {
+        let guess = $(".digit-group")
+          .find("input")
+          .map((i, e) => $(e).val())
+          .get()
+          .join("");
+        sha256("check", guess, (e) => {
+          if (e == check) {
+            sha256("img", guess, (e) => {
+              $("#final").css("background-image", "url(./guesses/" + e + ".png");
+              $("#final").css("visibility", "visible");
+              console.log("Correct!\n" + e)
+            });
+          }
+        });
+      };
+
+      var clearResult = function () {
+        $("#final").css("background-image", "");
+        $("#final").css("visibility", "hidden");
+        $(".digit-group")
+          .find("input").each((i,e)=>$(e).val(""))
+      }
+
+      async function _sha256(input = "", algorithm = "SHA-256") {
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(input);
+        const digest = await crypto.subtle.digest(algorithm, encoded);
+        const uints = new Uint8Array(digest);
+        const parts = Array.from(uints).map((b) => b.toString(16));
+        return parts.join("");
+      }
+
+      let sha256 = (salt, text, callback) => {
+        _sha256(salt + "|" + text).then((e) => callback(e));
+      };
+
+      $(".digit-group")
+        .find("input")
+        .each(function () {
+          $(this).attr("maxlength", 1);
+          $(this).on("keyup", function (e) {
+            var parent = $($(this).parent());
+
+            if (e.keyCode === 8 || e.keyCode === 37) {
+              var prev = parent.find("input#" + $(this).data("previous"));
+
+              if (prev.length) {
+                $(prev).select();
+              }
+            } else {
+              var next = parent.find("input#" + $(this).data("next"));
+
+              if (next.length) {
+                $(next).select();
+              } else {
+                if (parent.data("autosubmit")) {
+                  parent.submit();
+                }
+              }
+            }
+            console.log(allInput());
+          });
+        });
+    </script>
+
+    <script>
+      var container = document.getElementById("animate");
+      var emoji = [..."👑👑🤴💎🏆💰✡🕎"];
+      var circles = [];
+
+      for (var i = 0; i < 5; i++) {
+        addCircle(
+          i * 150,
+          [10 + 0, 300],
+          emoji[Math.floor(Math.random() * emoji.length)]
+        );
+        addCircle(
+          i * 150,
+          [10 + 0, -300],
+          emoji[Math.floor(Math.random() * emoji.length)]
+        );
+        addCircle(
+          i * 150,
+          [10 - 200, -300],
+          emoji[Math.floor(Math.random() * emoji.length)]
+        );
+        addCircle(
+          i * 150,
+          [10 + 200, 300],
+          emoji[Math.floor(Math.random() * emoji.length)]
+        );
+        addCircle(
+          i * 150,
+          [10 - 400, -300],
+          emoji[Math.floor(Math.random() * emoji.length)]
+        );
+        addCircle(
+          i * 150,
+          [10 + 400, 300],
+          emoji[Math.floor(Math.random() * emoji.length)]
+        );
+        addCircle(
+          i * 150,
+          [10 - 600, -300],
+          emoji[Math.floor(Math.random() * emoji.length)]
+        );
+        addCircle(
+          i * 150,
+          [10 + 600, 300],
+          emoji[Math.floor(Math.random() * emoji.length)]
+        );
+      }
+
+      function addCircle(delay, range, color) {
+        setTimeout(function () {
+          var c = new Circle(
+            range[0] + Math.random() * range[1],
+            80 + Math.random() * 4,
+            color,
+            {
+              x: -0.15 + Math.random() * 0.3,
+              y: 1 + Math.random() * 1
+            },
+            range
+          );
+          circles.push(c);
+        }, delay);
+      }
+
+      function Circle(x, y, c, v, range) {
+        var _this = this;
+        this.x = x;
+        this.y = y;
+        this.color = c;
+        this.v = v;
+        this.range = range;
+        this.element = document.createElement("span");
+        /*this.element.style.display = 'block';*/
+        this.element.style.opacity = 0;
+        this.element.style.position = "absolute";
+        this.element.style.fontSize = "26px";
+        this.element.style.color =
+          "hsl(" + ((Math.random() * 360) | 0) + ",80%,50%)";
+        this.element.innerHTML = c;
+        container.appendChild(this.element);
+
+        this.update = function () {
+          if (_this.y > 800) {
+            _this.y = 80 + Math.random() * 4;
+            _this.x = _this.range[0] + Math.random() * _this.range[1];
+          }
+          _this.y += _this.v.y;
+          _this.x += _this.v.x;
+          this.element.style.opacity = 1;
+          this.element.style.transform =
+            "translate3d(" + _this.x + "px, " + _this.y + "px, 0px)";
+          this.element.style.webkitTransform =
+            "translate3d(" + _this.x + "px, " + _this.y + "px, 0px)";
+          this.element.style.mozTransform =
+            "translate3d(" + _this.x + "px, " + _this.y + "px, 0px)";
+        };
+      }
+
+      function animate() {
+        for (var i in circles) {
+          circles[i].update();
+        }
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
