@@ -9,6 +9,17 @@ const { queryUpdate, queryDocument, addDocument, queryByIndex, queryTopIndex } =
 const punnynpm = require("punycode/") // "/" to shadow inner nodejs punycode
 var app = express();
 
+
+process.on('uncaughtException', function (err) {
+    console.log('Un-Caught exception: ', err)
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.log('Unhandled rejection - ', `reason: ${reason}`, '\nat', promise)
+})
+
+
+
 app.use((req, res, next) => {
     //res.setHeader("Access-Control-Allow-Origin", "*"); // @todo
     //res.setHeader("Access-Control-Allow-Headers", "Content-type");
