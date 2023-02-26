@@ -1,9 +1,18 @@
-let correctCheck =
-    "63f5e1bb34f9f7b6e651fa5ae0abeecc82f31e3de17279ccd3b45a8a8efd1";
-let secrets = [
 
-]
-let wrongHash = "63f5e1bb34f9f7b6e651fa5ae0abeecc82f31e3de17279ccd3b45a8a8efd1"
+let secrets = {
+    "63f5e1bb34f9f7b6e651fa5ae0abeecc82f31e3de17279ccd3b45a8a8efd1": 1,
+    "343b447838ccf4243947c62595837a5916c9b159bef5478b0735ceb21fe1dca": 2,
+    "97ae3ce49ea8266c41df5371b4ec4e470e032ec10abb85f4f3e76e6e41e9481": 2,
+    "02c83d4b8bae85b49a7ee8d7ca02f20a94b786a9f6d1f95d9fedac69921fb53": 2,
+    "1b6575be6177a34c4123431a59f9aff42a412a6a7f648c1acf725e625a5f3220": 3
+}
+let texts = {
+    0: "איזה בזבוז!|נחש את האמת|לא ניתן להכחישה!",
+    1: "יפה ניחשת,|ולמלך לא התכחשת!",
+    2: "חה! בדיחה טובה!|ליצן החצר למד ממך",
+    3: "מה עשית? מכשף!|אי אהה - איהה"
+}
+let wrongHash = "bad2"
 
 let allInput = () => {
     let guessPlain = $(".digit-group")
@@ -20,15 +29,11 @@ let allInput = () => {
             sha256("img", guessPlain, (imageHash) => {
                 console.table({ guessPlain, precheckHash, imageHash })
 
-                if (precheckHash == correctCheck) {
-                    showResult(imageHash, true);
-                    console.log("Correct!\n" + imageHash)
-                }
-                else if (secrets.indexOf(precheckHash) > -1) {
-                    showResult(imageHash, false);
+                if (secrets[precheckHash]) {
+                    showResult(imageHash, texts[secrets[precheckHash]]);
                 }
                 else {
-                    showResult(wrongHash, false);
+                    showResult(wrongHash, texts[0]);
                 }
 
                 let guessParams = new URLSearchParams()
@@ -43,11 +48,11 @@ let allInput = () => {
     }
 };
 
-var showResult = function (hash, isCorrect) {
+var showResult = function (hash, text) {
     $("#final").css("background-image", "url(./guesses/" + hash + ".png");
     $("#final").css("visibility", "visible");
-    $("#correctg").css("display", isCorrect ? "inline" : "none");
-    $("#wrongg").css("display", !isCorrect ? "inline" : "none");
+    $("#correctg").css("display", "inline")
+    $("#correctg").html(text.replace(/\|/g, '<br/>'))
     $(".digit-group")
         .find("input").each((i, e) => $(e).val(""))
 }
