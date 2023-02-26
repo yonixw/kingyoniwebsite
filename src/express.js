@@ -72,7 +72,7 @@ app.get("/api/status2", async (req, resp) => {
     if (!myid /*error or not found(null)*/) {
         let hostname = req.hostname;
         try {
-            hostname += " - " + punnynpm.toUnicode(req.hostname.split(':')[0])
+            //hostname += " - " + punnynpm.toUnicode(req.hostname.split(':')[0])
         } catch (error) { }
 
         let newDoc = await addDocument(VISIT_FAUNA_DB, {
