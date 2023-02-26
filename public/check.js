@@ -1,8 +1,9 @@
 let correctCheck =
-    "4cac50ea60686e392e3e22256cc61ab9a936a39fb01c2a3bf0751c59feaa7e1f";
-let wrongs = [
+    "63f5e1bb34f9f7b6e651fa5ae0abeecc82f31e3de17279ccd3b45a8a8efd1";
+let secrets = [
 
 ]
+let wrongHash = "63f5e1bb34f9f7b6e651fa5ae0abeecc82f31e3de17279ccd3b45a8a8efd1"
 
 let allInput = () => {
     let guessPlain = $(".digit-group")
@@ -10,23 +11,36 @@ let allInput = () => {
         .map((i, e) => $(e).val())
         .get()
         .join("");
-    sha256("check", guessPlain, (guessHash) => {
-        console.log(`Guess hash\n '${guessPlain}'\n '${guessHash}'`)
-        if (guessHash == correctCheck) {
-            sha256("img", guessPlain, (correctHash) => {
-                showResult(correctHash, true);
-                console.log("Correct!\n" + correctHash)
-            });
-        }
-        else {
-            if (wrongs.indexOf(guessHash) > -1) {
-                showResult(guessHash, false);
-            }
-            else if (guessPlain.length == 9) {
 
-            }
-        }
-    });
+    if (guessPlain.length == 10) {
+
+        sha256("check", guessPlain, (precheckHash) => {
+
+
+            sha256("img", guessPlain, (imageHash) => {
+                console.table({ guessPlain, precheckHash, imageHash })
+
+                if (precheckHash == correctCheck) {
+                    showResult(imageHash, true);
+                    console.log("Correct!\n" + imageHash)
+                }
+                else if (secrets.indexOf(precheckHash) > -1) {
+                    showResult(imageHash, false);
+                }
+                else {
+                    showResult(wrongHash, false);
+                }
+
+                let guessParams = new URLSearchParams()
+                guessParams.append("guess", guessPlain)
+                guessParams.append("precheckHash", precheckHash)
+                guessParams.append("imageHash", imageHash)
+
+                fetch("/api/guess?" + guessParams.toString())
+            });
+
+        });
+    }
 };
 
 var showResult = function (hash, isCorrect) {
@@ -41,8 +55,11 @@ var showResult = function (hash, isCorrect) {
 var clearResult = function () {
     $("#final").css("background-image", "");
     $("#final").css("visibility", "hidden");
+    $("#correctg").css("visibility", "hidden");
+    $("#wrongg").css("visibility", "hidden");
     $(".digit-group")
         .find("input").each((i, e) => $(e).val(""))
+    $("#input-dot").val(".")
 }
 
 async function _sha256(input = "", algorithm = "SHA-256") {

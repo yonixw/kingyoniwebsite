@@ -37,7 +37,7 @@ app.use(express.static("./public"))
 
 
 const GUESS_FAUNA_DB = "guesses";
-const GUESS_INDEX_FAUNA_DB = "guess_value"
+const GUESS_INDEX_FAUNA_DB = "guess_value_search"
 const VISIT_FAUNA_DB = "visits";
 const COOKIE_ANON = "anon_id";
 
@@ -56,9 +56,14 @@ app.get("/api/status", async (req, resp) => {
     }
 
     if (!myid /*error or not found(null)*/) {
+        let hostname = req.hostname;
+        try {
+            hostname += " - " + punnynpm.toUnicode(req.hostname.split(':')[0])
+        } catch (error) { }
+
         let newDoc = await addDocument(VISIT_FAUNA_DB, {
             ip: myip,
-            host: req.hostname + " - " + punnynpm.decode(req.hostname),
+            host: hostname,
             created: Date.now(), updated: Date.now(),
             count: 1
         })
@@ -71,6 +76,8 @@ app.get("/api/status", async (req, resp) => {
 
 app.get("/api/guess", async (req, resp) => {
     var guessParam = req?.query?.guess
+    var precheckHash = req?.query?.precheckHash
+    var imageHash = req?.query?.imageHash
     var myid = req.cookies[COOKIE_ANON] || "(no-id)" // string of long number
 
 
@@ -81,15 +88,26 @@ app.get("/api/guess", async (req, resp) => {
             old = await queryByIndex(GUESS_INDEX_FAUNA_DB, [guessParam])
             const oldId = old.ref.id;
             console.log(oldId, old);
-            await queryUpdate(GUESS_FAUNA_DB, oldId, { updated: Date.now(), count: (old?.data?.count || 1) + 1 })
+            await queryUpdate(GUESS_FAUNA_DB, oldId, {
+                lastUser: myid,
+                updated: Date.now(),
+                count: (old?.data?.count || 1) + 1
+            })
+            return resp.send({ id: oldId })
         } catch (e1) {
-            console.log("err1", e1)
+            // console.log("err1", e1)
             try {
-                let newDoc = await addDocument(GUESS_FAUNA_DB, { guess: guessParam, created: Date.now(), updated: Date.now(), count: 1 })
+                let newDoc = await addDocument(GUESS_FAUNA_DB, {
+                    imageHash,
+                    precheckHash,
+                    guess: guessParam,
+                    firstUser: myid,
+                    created: Date.now(), updated: Date.now(), count: 1
+                })
                 const newID = newDoc.ref.id;
                 return resp.send({ id: newID })
             } catch (e2) {
-                console.log("err2", e2)
+                //console.log("err2", e2)
                 return resp.status(500).send({ error: [`${e1}`, `${e2}`] })
             }
         }
