@@ -1,6 +1,7 @@
 var container = document.getElementById("animate");
 var emoji = [..."👑👑🤴💎🏆💰✡🕎"];
 var circles = [];
+var guesses = [];
 
 for (var i = 0; i < 5; i++) {
     addCircle(
@@ -43,10 +44,45 @@ for (var i = 0; i < 5; i++) {
         [10 + 600, 300],
         emoji[Math.floor(Math.random() * emoji.length)]
     );
+
 }
 
+const places = [
+    [10 + 0, 300],
+    [10 + 0, -300],
+    [10 - 200, -300],
+    [10 + 200, 300],
+    [10 - 400, -300],
+    [10 + 400, 300],
+    [10 - 600, -300],
+    [10 + 600, 300]
+]
+
+function refreshGuesses() {
+    fetch("/api/latest").then(j => j.json().then(e => {
+        let guesses2 = guesses;
+        guesses = []; // to not make update error
+        guesses2.forEach(e => e.element.remove())
+
+        e.forEach((result, i) => {
+            let place = JSON.parse(JSON.stringify(places[i % places.length]));
+            let r = () =>
+                immediageCircle(place, result.replace(/\./g, '\n'), guesses)
+            setTimeout(r(), 2000 * i / e.length)
+        })
+    }))
+}
+
+setInterval(refreshGuesses, 30 * 1000)
+refreshGuesses()
+
+
 function addCircle(delay, range, color) {
-    setTimeout(function () {
+    setTimeout(immediageCircle(range, color), delay);
+}
+
+function immediageCircle(range, color, arr = circles) {
+    return function () {
         var c = new Circle(
             range[0] + Math.random() * range[1],
             80 + Math.random() * 4,
@@ -57,8 +93,8 @@ function addCircle(delay, range, color) {
             },
             range
         );
-        circles.push(c);
-    }, delay);
+        arr.push(c);
+    };
 }
 
 function Circle(x, y, c, v, range) {
@@ -98,6 +134,9 @@ function Circle(x, y, c, v, range) {
 function animate() {
     for (var i in circles) {
         circles[i].update();
+    }
+    for (var i in guesses) {
+        guesses[i].update();
     }
     requestAnimationFrame(animate);
 }

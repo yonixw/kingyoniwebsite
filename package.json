@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js localhost 8080"
+    "start": "nodemon --watch src --watch public -e js,json app.js localhost 8080"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",

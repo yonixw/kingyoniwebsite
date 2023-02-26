@@ -46,8 +46,8 @@ let allInput = () => {
 var showResult = function (hash, isCorrect) {
     $("#final").css("background-image", "url(./guesses/" + hash + ".png");
     $("#final").css("visibility", "visible");
-    $("#correctg").css("visibility", isCorrect ? "visible" : "hidden");
-    $("#wrongg").css("visibility", !isCorrect ? "visible" : "hidden");
+    $("#correctg").css("display", isCorrect ? "inline" : "none");
+    $("#wrongg").css("display", !isCorrect ? "inline" : "none");
     $(".digit-group")
         .find("input").each((i, e) => $(e).val(""))
 }
@@ -55,8 +55,8 @@ var showResult = function (hash, isCorrect) {
 var clearResult = function () {
     $("#final").css("background-image", "");
     $("#final").css("visibility", "hidden");
-    $("#correctg").css("visibility", "hidden");
-    $("#wrongg").css("visibility", "hidden");
+    $("#correctg").css("display", "none");
+    $("#wrongg").css("display", "none");
     $(".digit-group")
         .find("input").each((i, e) => $(e).val(""))
     $("#input-dot").val(".")

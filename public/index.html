@@ -1,169 +1,111 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>מלך.ישראל</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Suez+One&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <style>
-      body {
-        font-family: "Suez One", serif;
-        font-size: 2em;
-        padding: 0;
-        margin: 0;
-        overflow: hidden;
-        background: gold;
-      }
+<head>
+  <title>מלך.ישראל</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      .app {
-        margin: auto;
-        /*background-color: red;*/
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Suez+One&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <style>
+    body {
+      font-family: "Suez One", serif;
+      font-size: 2em;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+      background: gold;
+    }
 
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-        position: absolute;
-        max-width: 100%;
-        max-height: 100%;
+    .app {
+      margin: auto;
+      /*background-color: red;*/
 
-        text-align: center;
-        padding: 15% 0 45% 0;
-      }
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      position: absolute;
+      max-width: 100%;
+      max-height: 100%;
 
-      .digit-group input {
-        width: 30px;
-        height: 50px;
-        background-color: white;
-        border: 2px solid black;
-        border-radius: 7px;
-        line-height: 50px;
-        text-align: center;
-        font-size: 24px;
-        font-family: "Raleway", sans-serif;
-        font-weight: 200;
-        color: black;
-        margin: 0 2px;
-      }
+      text-align: center;
+      padding: 15% 0 45% 0;
+    }
 
-      #container {
-        left: 0px;
-        top: -100px;
-        height: calc(100vh + 100px);
-        overflow: hidden;
-        position: relative;
-      }
+    .digit-group input {
+      width: 30px;
+      height: 50px;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 7px;
+      line-height: 50px;
+      text-align: center;
+      font-size: 24px;
+      font-family: "Raleway", sans-serif;
+      font-weight: 200;
+      color: black;
+      margin: 0 2px;
+    }
 
-      #animate {
-        margin: 0 auto;
-        width: 20px;
-        overflow: visible;
-        position: relative;
-      }
+    #container {
+      left: 0px;
+      top: -100px;
+      height: calc(100vh + 100px);
+      overflow: hidden;
+      position: relative;
+    }
 
-      #all {
-        overflow: hidden;
-        height: 100vh;
-        width: 100%;
-        position: fixed;
-      }
-    </style>
-  </head>
+    #animate {
+      margin: 0 auto;
+      width: 20px;
+      overflow: visible;
+      position: relative;
+    }
 
-  <body dir="rtl">
-    <div id="all">
-      <div id="container">
-        <div id="animate"></div>
-      </div>
+    #all {
+      overflow: hidden;
+      height: 100vh;
+      width: 100%;
+      position: fixed;
+    }
+  </style>
+</head>
+
+<body dir="rtl">
+  <div id="all">
+    <div id="container">
+      <div id="animate"></div>
     </div>
+  </div>
 
-    <div class="app">
+  <div class="app">
+    <span>
       התרצה את פני המלך לגלות? <br />
       כל מה שנשאר זה את שמו להגות! <br />
+    </span>
+    <hr style="visibility: hidden;" />
+    <form method="get" class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
+      <input type="text" id="digit-1" name="digit-1" data-next="digit-2" />
+      <input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" />
+      <input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" />
+      <input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" />
+      <input id="input-dot" type="text" value="." style="visibility: collapse;" />
       <hr style="visibility: hidden;" />
-      <form
-        method="get"
-        class="digit-group"
-        data-group-name="digits"
-        data-autosubmit="false"
-        autocomplete="off"
-      >
-        <input type="text" id="digit-1" name="digit-1" data-next="digit-2" />
-        <input
-          type="text"
-          id="digit-2"
-          name="digit-2"
-          data-next="digit-3"
-          data-previous="digit-1"
-        />
-        <input
-          type="text"
-          id="digit-3"
-          name="digit-3"
-          data-next="digit-4"
-          data-previous="digit-2"
-        />
-        <input
-          type="text"
-          id="digit-4"
-          name="digit-4"
-          data-next="digit-5"
-          data-previous="digit-3"
-        />
-        <input
-          id="input-dot"
-          type="text"
-          value="."
-          style="visibility: collapse;"
-        />
-        <hr style="visibility: hidden;" />
 
-        <input
-          type="text"
-          id="digit-5"
-          name="digit-5"
-          data-next="digit-6"
-          data-previous="digit-4"
-        />
-        <input
-          type="text"
-          id="digit-6"
-          name="digit-6"
-          data-next="digit-7"
-          data-previous="digit-5"
-        />
-        <input
-          type="text"
-          id="digit-7"
-          name="digit-7"
-          data-next="digit-8"
-          data-previous="digit-6"
-        />
-        <input
-          type="text"
-          id="digit-8"
-          name="digit-8"
-          data-next="digit-9"
-          data-previous="digit-7"
-        />
-        <input
-          type="text"
-          id="digit-9"
-          name="digit-9"
-          data-previous="digit-8"
-        />
-      </form>
-    </div>
+      <input type="text" id="digit-5" name="digit-5" data-next="digit-6" data-previous="digit-4" />
+      <input type="text" id="digit-6" name="digit-6" data-next="digit-7" data-previous="digit-5" />
+      <input type="text" id="digit-7" name="digit-7" data-next="digit-8" data-previous="digit-6" />
+      <input type="text" id="digit-8" name="digit-8" data-next="digit-9" data-previous="digit-7" />
+      <input type="text" id="digit-9" name="digit-9" data-previous="digit-8" />
+    </form>
+  </div>
 
-    <div id="final" class="app" style="
+  <div id="final" class="app" style="
       padding: 0; 
       visibility: hidden;
       background-size: auto 100%;
@@ -171,26 +113,28 @@
       background-repeat: no-repeat;
      width: 100%;
      height: 75%;
-     "
-     onclick="clearResult()"
-     >
+     " onclick="clearResult()">
 
     <span id="correctg" style="color: white;
       text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;">
-          יפה ניחשת, <br />
-          ולמלך לא התכחשת!
-      <span> 
+      יפה ניחשת, <br />
+      ולמלך לא התכחשת!
+    </span>
 
-      <span id="wrongg" style="color: white;
+    <span id="wrongg" style="color: white;
       text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;">
-          איזה חוצפה!<br/>
-          נחש את האמת<br/>
-          לא ניתן להכחישה!<br/>
+      איזה חוצפה!<br />
+      נחש את האמת<br />
+      לא ניתן להכחישה!<br />
       <span>
-      
-    </div>
 
-    <script src="./check.js"></script>
-    <script src="./animate-emoji.js"></script>
-  </body>
+
+
+
+  </div>
+
+  <script src="./check.js"></script>
+  <script src="./animate-emoji.js"></script>
+</body>
+
 </html>

@@ -5,7 +5,7 @@ var express = require("express");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var crypto = require("crypto")
-const { queryUpdate, queryDocument, addDocument, queryByIndex } = require("./faunadb");
+const { queryUpdate, queryDocument, addDocument, queryByIndex, queryTopIndex } = require("./faunadb");
 const punnynpm = require("punycode/") // "/" to shadow inner nodejs punycode
 var app = express();
 
@@ -38,7 +38,10 @@ app.use(express.static("./public"))
 
 const GUESS_FAUNA_DB = "guesses";
 const GUESS_INDEX_FAUNA_DB = "guess_value_search"
+const GUESS_LATEST_INDEX_FAUNA_DB = "top_latest_guess";
+
 const VISIT_FAUNA_DB = "visits";
+
 const COOKIE_ANON = "anon_id";
 
 app.get("/api/status", async (req, resp) => {
@@ -64,6 +67,7 @@ app.get("/api/status", async (req, resp) => {
         let newDoc = await addDocument(VISIT_FAUNA_DB, {
             ip: myip,
             host: hostname,
+            agent: req.header("user-agent") || "(no-user-agent)",
             created: Date.now(), updated: Date.now(),
             count: 1
         })
@@ -114,6 +118,27 @@ app.get("/api/guess", async (req, resp) => {
     }
 
     resp.status(500).send({ error: "not-reach" })
+})
+
+const exclude = "יוני.וסרמן"
+
+app.get("/api/latest", async (req, resp) => {
+    try {
+        let results =
+            await queryTopIndex(GUESS_LATEST_INDEX_FAUNA_DB, 100);
+
+        let resultsF = results?.data
+            ?.map(e => e[1])
+            ?.filter(e => e !== exclude) || [""];
+
+        let randomResults = new Array(10).fill(0).map(e => resultsF[Math.floor(resultsF.length * Math.random())])
+
+        //console.log({ results, resultsF, randomResult })
+
+        resp.send(randomResults)
+    } catch (error) {
+        return resp.status(500).send({ error: `${error}` })
+    }
 })
 
 app.get("/api/", (req, resp) => {

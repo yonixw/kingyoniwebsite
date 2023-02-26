@@ -27,6 +27,12 @@ async function queryByIndex(indexName, value) {
     )
 }
 
+async function queryTopIndex(index, top = 10) {
+    return serverClient.query(
+        q.Paginate(q.Match(q.Index(index)), { size: top })
+    )
+}
+
 
 async function queryUpdate(coll, index_id, doc) {
     return serverClient.query(
@@ -58,7 +64,7 @@ async function deleteDocument(coll, index_id) {
 
 module.exports = {
     addDocument,
-    queryDocument, queryByIndex,
+    queryDocument, queryByIndex, queryTopIndex,
     queryUpdate, queryReplace, deleteDocument
 }
 
