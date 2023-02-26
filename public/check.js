@@ -108,6 +108,6 @@ $(".digit-group")
 
 
 setInterval(() => {
-    fetch("/api/status")
+    fetch("/api/status2")
 }, 60 * 1000)
-fetch("/api/status")
+fetch("/api/status2")

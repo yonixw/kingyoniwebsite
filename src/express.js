@@ -55,7 +55,7 @@ const VISIT_FAUNA_DB = "visits";
 
 const COOKIE_ANON = "anon_id";
 
-app.get("/api/status", async (req, resp) => {
+app.get("/api/status2", async (req, resp) => {
     var myip = [req.ip, ...req.ips, req.header("x-forwarded-for")];
     var myid = req.cookies[COOKIE_ANON] // string of long number
 
@@ -133,7 +133,7 @@ app.get("/api/guess", async (req, resp) => {
 
 const exclude = "יוני.וסרמן"
 
-app.get("/api/latest", async (req, resp) => {
+app.get("/api/latest2", async (req, resp) => {
     try {
         let results =
             await queryTopIndex(GUESS_LATEST_INDEX_FAUNA_DB, 100);

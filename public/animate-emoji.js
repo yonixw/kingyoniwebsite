@@ -59,7 +59,7 @@ const places = [
 ]
 
 function refreshGuesses() {
-    fetch("/api/latest").then(j => j.json().then(e => {
+    fetch("/api/latest2").then(j => j.json().then(e => {
         let guesses2 = guesses;
         guesses = []; // to not make update error
         guesses2.forEach(e => e.element.remove())
